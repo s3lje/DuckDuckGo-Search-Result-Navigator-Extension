@@ -1,0 +1,13 @@
+{
+    "manifest_version": 3,
+    "name": "DuckDuck Go Search Result Navigator",
+    "version": "1.0",
+    "description": "An extension that lets you tab through the results of a duck duck go search",
+    "permissions": ["tabs"],
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"]
+        }
+    ]
+}
