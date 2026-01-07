@@ -3,11 +3,14 @@
     "name": "DuckDuck Go Search Result Navigator",
     "version": "1.0",
     "description": "An extension that lets you tab through the results of a duck duck go search",
-    "permissions": ["tabs"],
+    "permissions": ["storage"],
     "content_scripts": [
         {
-            "matches": ["<all_urls>"],
+            "matches": ["https://duckduckgo.com/*"],
             "js": ["content.js"]
         }
-    ]
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    }
 }

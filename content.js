@@ -1,26 +1,60 @@
-document.addEventListener('keydown', (event) => {
-  if (event.key === "Tab") {
-    let resultItems = document.querySelectorAll('.react-results--main li');
+let skipAds = true;
 
-    // Make sure each <li> is focusable by setting a tabindex
-    // because they are not focusable by default, at least not
-    // in Firefox
+// Load settings
+browser.storage.local.get({ skipAds: true }).then((result) => {
+    skipAds = result.skipAds;
+});
+
+// React to live popup changes
+browser.storage.onChanged.addListener((changes, area) => {
+    if (area === "local" && changes.skipAds) {
+        skipAds = changes.skipAds.newValue;
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== "Tab") return;
+
+    let resultItems = getResultItems(skipAds);
+    if (!resultItems.length) return;
+
+    // Make <li> focusable (required for Firefox)
     resultItems.forEach(item => {
-      if (!item.hasAttribute('tabindex')) {
-        item.setAttribute('tabindex', '0');  // Make <li> focusable
-      }
+        if (!item.hasAttribute('tabindex')) {
+            item.setAttribute('tabindex', '0');
+        }
     });
 
     let activeElement = document.activeElement;
-    let currentIndex = Array.from(resultItems).indexOf(activeElement);
+    let currentIndex = resultItems.indexOf(activeElement);
 
-    // Here the conditional controls wether we go backwards or forwards
+    // If nothing is focused yet, focus the first result
+    if (currentIndex === -1) {
+        resultItems[0].focus();
+        event.preventDefault();
+        return;
+    }
+
     let nextIndex = currentIndex + (event.shiftKey ? -1 : 1);
 
-    // Ensure that nextIndex is within bounds
     if (nextIndex >= 0 && nextIndex < resultItems.length) {
         resultItems[nextIndex].focus();
-        event.preventDefault();     // Make sure tab doesnt do its usual action
+        event.preventDefault();
     }
-  }
+
 });
+
+function getResultItems(skipAds) {
+    const allItems = Array.from(
+        document.querySelectorAll('.react-results--main li')
+    );
+
+    if (!skipAds) return allItems;
+
+    // Duck Duck Go saves whether its a ad or not in the
+    // dataset layout, so here we only return the non ad results
+    return allItems.filter(item =>
+        item.dataset.layout === "organic"
+    );
+}
+
