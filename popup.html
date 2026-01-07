@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <label>
-            <input type="checkbox" id="skipAds">
-            Skip Sponsored Links
-        </label>
+  <head>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <div class="popup">
+      <h1>DDG Search  Navigator</h1>
 
-        <script src="popup.js"></script>
-    </body>
+      <label class="toggle">
+        <input type="checkbox" id="skipAds">
+        <span class="slider"></span>
+        <span class="label-text">Skip ad results</span>
+      </label>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
 </html>
+
