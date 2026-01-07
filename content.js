@@ -1,3 +1,26 @@
+const style = document.createElement("style");
+style.textContent = `
+.react-results--main li[tabindex="0"]:focus-visible {
+    outline: none;
+    border-radius: 10px;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 120, 212, 0.12),
+        rgba(0, 120, 212, 0.04)
+    );
+    box-shadow:
+        0 0 0 2px rgba(0, 120, 212, 0.6),
+        0 8px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.react-results--main li[tabindex="0"] {
+    transition: transform 0.12s ease;
+}
+`;
+document.head.appendChild(style);
+
 let skipAds = true;
 
 // Load settings
