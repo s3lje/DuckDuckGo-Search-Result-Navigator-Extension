@@ -21,24 +21,10 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-let skipAds = true;
-
-// Load settings
-browser.storage.local.get({ skipAds: true }).then((result) => {
-    skipAds = result.skipAds;
-});
-
-// React to live popup changes
-browser.storage.onChanged.addListener((changes, area) => {
-    if (area === "local" && changes.skipAds) {
-        skipAds = changes.skipAds.newValue;
-    }
-});
-
 document.addEventListener('keydown', (event) => {
     if (event.key !== "Tab" && event.key !== "Enter") return;
 
-    let resultItems = getResultItems(skipAds);
+    let resultItems = getResultItems();
     if (!resultItems.length) return;
 
     // Make <li> focusable (required for Firefox)
@@ -79,15 +65,11 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-function getResultItems(skipAds) {
+function getResultItems() {
     const allItems = Array.from(
         document.querySelectorAll('.react-results--main li')
     );
 
-    if (!skipAds) return allItems;
-
-    // Duck Duck Go saves whether its a ad or not in the
-    // dataset layout, so here we only return the non ad results
     return allItems.filter(item =>
         item.dataset.layout === "organic"
     );
