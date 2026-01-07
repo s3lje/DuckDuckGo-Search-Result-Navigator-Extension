@@ -36,7 +36,7 @@ browser.storage.onChanged.addListener((changes, area) => {
 });
 
 document.addEventListener('keydown', (event) => {
-    if (event.key !== "Tab") return;
+    if (event.key !== "Tab" && event.key !== "Enter") return;
 
     let resultItems = getResultItems(skipAds);
     if (!resultItems.length) return;
@@ -51,20 +51,32 @@ document.addEventListener('keydown', (event) => {
     let activeElement = document.activeElement;
     let currentIndex = resultItems.indexOf(activeElement);
 
-    // If nothing is focused yet, focus the first result
-    if (currentIndex === -1) {
-        resultItems[0].focus();
-        event.preventDefault();
+    // Open the highlighted link
+    if (event.key === "Enter" && activeElement?.tagName === "LI"){
+        const link = activeElement.querySelector('a[data-testid="result-title-a"]');
+        if (link){
+            link.focus();
+            event.preventDefault();
+            link.click();
+        }
         return;
     }
 
-    let nextIndex = currentIndex + (event.shiftKey ? -1 : 1);
+    // Tab navigation
+    if (event.key === "Tab"){
+        if (currentIndex === -1){
+            resultItems[0].focus();
+            event.preventDefault();
+            return;
+        }
 
-    if (nextIndex >= 0 && nextIndex < resultItems.length) {
-        resultItems[nextIndex].focus();
-        event.preventDefault();
+        let nextIndex = currentIndex + (event.shiftKey ? -1 : 1);
+
+        if (nextIndex >= 0 && nextIndex < resultItems.length){
+            resultItems[nextIndex].focus();
+            event.preventDefault();
+        }
     }
-
 });
 
 function getResultItems(skipAds) {
